@@ -11,13 +11,13 @@ h3. Requirements
 
 h3. Try it out
 
- 1. Open a terminal, Cd into the test directory and run:
-   'make'
-   'make run'
-   
+ 1. Open a terminal and run:
+   'rake run'
+
 This will start the erlang node named 'math'
 
- 2. Open another terminal, and run: 'ruby sample.rb'
+ 2. Open another terminal, and run:
+    'ruby examples/client.rb'
 
 h3. How to use?
 
@@ -48,7 +48,7 @@ The result will always be an Array of the form:
 <pre>
 <code>
  [:ok,Response] where Response is the result from the Erlang
- 
+
   or
 
  [:badrpc,Reason] where Reason is the 'why' it failed
@@ -72,13 +72,13 @@ class MathController < ApplicationController
     a = params[:a]
     b = params[:b]
     r = Erlang::Node.rpc("math","math_server","add",[a.to_i,b.to_i])
-    
+
     if r[0] == :badrpc
       @result = "Error"
     else
       @result = r[1]
     end
-    
+
   end
 end
 </code>
