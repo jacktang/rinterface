@@ -49,6 +49,13 @@ task :run => [:compile] do
     sh("erl -W -pa examples -sname math -s #{START_MODULE}")
 end
 
+namespace :spec do
+  desc "Open up a shell and run spec test server"
+  task :run => [:compile] do
+    sh("erl -W -pa spec -sname spec -s spec_server")
+  end
+end
+
 # Spec
 #
 require 'spec/rake/spectask'
