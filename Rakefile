@@ -41,12 +41,20 @@ task :default => :compile
 #
 desc "Open up a shell"
 task :shell => [:compile] do
-    sh("erl -sname rinterface -pa examples")
+  sh("erl -sname rinterface -pa examples")
 end
 
-desc "Open up a shell and run #{START_MODULE}:start()"
-task :run => [:compile] do
-    sh("erl -W -pa examples -sname math -s #{START_MODULE}")
+namespace :daemon do
+  desc "Daemon run #{START_MODULE}:start()"
+  task :start => [:compile] do
+    pid = sh("erl -heart -W -pa examples -sname math -s #{START_MODULE} -detached")
+    puts "Now try 'ruby examples/client.rb' #{pid}"
+  end
+
+  task :status do
+    sh("ps aux | grep #{START_MODULE}")
+  end
+
 end
 
 namespace :spec do

@@ -3,17 +3,17 @@ require 'lib/rinterface'
 
 # Try different responses...
 
-# Bad rpc. Try to call the wrong service
+puts "Bad rpc test. Try to call the wrong service"
 r = Erlang::Node.rpc("math","matx_server","add",[10,20])
 puts "Got: #{r.inspect}"
 
 puts "--------"
-# No Port for Service. Can't find a port for 'ath'
+puts "Bad port test, No Port for Service. Can't find a port for 'ath'"
 r = Erlang::Node.rpc("ath","matx_server","add",[10,20])
 puts "Got: #{r.inspect}"
 
 puts "--------"
-# Good call
+puts "Good call, add 10 + 20"
 r = Erlang::Node.rpc("math","math_server","add",[10,20])
 puts "Got: #{r.inspect}"
 

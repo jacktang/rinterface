@@ -10,17 +10,19 @@ start() ->
 add(X,Y) ->
     ?MODULE ! {self(),add,X,Y},
     receive
-	{?MODULE,Response} -> Response
+  {?MODULE,Response} -> Response
     end.
+
+sum(X,Y) -> X+Y.
 
 loop() ->
     receive
-	{From,add,X,Y} ->
-	    error_logger:info_msg("Got the request, and doing the add...~n"),
-	    Sum = X+Y,
-	    From ! {?MODULE,Sum},
-	    loop();
-	Any ->
-	    error_logger:info_msg("Got a crazy msg: ~p~n",[Any]),
-	    loop()
+  {From,add,X,Y} ->
+      error_logger:info_msg("Got the request, and doing the add...~n"),
+      Sum = X+Y,
+      From ! {?MODULE,Sum},
+      loop();
+  Any ->
+      error_logger:info_msg("Got a crazy msg: ~p~n",[Any]),
+      loop()
     end.

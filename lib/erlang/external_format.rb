@@ -199,7 +199,7 @@ module Erlang
     end
 
     def read(length)
-      p @peeked
+      # p @peeked
       if length < @peeked.length
         result = @peeked[0...length]
         @peeked = @peeked[length..-1]
@@ -301,7 +301,7 @@ module Erlang
 
     def read_float
       # fail("Invalid Type, not a float") #unless read_1 == FLOAT
-      p @peeked
+      # p @peeked
 
       string_value = read_string(63)
       result = string_value.to_f
