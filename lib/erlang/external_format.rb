@@ -33,6 +33,7 @@ module Erlang
       LARGE_BIGNUM = 111
 
       FLOAT = 99
+      NEW_FLOAT = 70
 
       ATOM = 100
       REF = 101           #old style reference
@@ -81,6 +82,7 @@ module Erlang
       case obj
       when Symbol then write_symbol(obj)
       when Fixnum, Bignum then write_fixnum(obj)
+      when Float then write_double(obj)
       when Array then write_tuple(obj)
       when String then write_binary(obj)
       when Pid then write_pid(obj)
@@ -117,6 +119,11 @@ module Erlang
     def write_fixnum(num)
       write_1 SMALL_INT
       write_1 num
+    end
+    
+    def write_double(num)
+      write_1 NEW_FLOAT
+      @out.write([num].pack('G'))
     end
 
     def write_tuple(data)
@@ -184,7 +191,8 @@ module Erlang
       when INT then read_int
       when SMALL_BIGNUM then read_small_bignum
       when LARGE_BIGNUM then read_large_bignum
-      when FLOAT,70 then read_float
+      when NEW_FLOAT then read_double
+      when FLOAT then read_float
       when NEW_REF then read_new_reference
       when PID then read_pid
       when SMALL_TUPLE then read_small_tuple
@@ -298,13 +306,16 @@ module Erlang
       end
       Bignum.induced_from(added)
     end
+    
+    def read_double
+      fail("Invalid Type, not a double") unless read_1 == NEW_FLOAT
+      read_string(64).unpack('G').first
+    end
 
     def read_float
-      # fail("Invalid Type, not a float") #unless read_1 == FLOAT
-      # p @peeked
+      fail("Invalid Type, not a float") unless read_1 == FLOAT
 
-      string_value = read_string(63)
-      result = string_value.to_f
+      read_string(32).unpack('g').first
     end
 
     def read_new_reference
