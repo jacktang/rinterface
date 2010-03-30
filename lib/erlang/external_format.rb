@@ -81,7 +81,7 @@ module Erlang
     def write_any_raw obj
       case obj
       when Symbol then write_symbol(obj)
-      when Fixnum, Bignum then write_fixnum(obj)
+      when Fixnum, Bignum then write_integer(obj)
       when Float then write_double(obj)
       when Array then write_tuple(obj)
       when String then write_binary(obj)
@@ -115,10 +115,15 @@ module Erlang
       write_string data
     end
 
-    #Only handles numbers < 256
-    def write_fixnum(num)
-      write_1 SMALL_INT
-      write_1 num
+    # TODO: Bignum support
+    def write_integer(num)
+      if 0 <= num && num < 256
+        write_1 SMALL_INT
+        write_1 num
+      else
+        write_1 INT
+        write_4 num
+      end
     end
     
     def write_double(num)
