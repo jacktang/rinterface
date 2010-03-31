@@ -12,18 +12,25 @@ module Erlang
       @result = nil
     end
 
-    def self.rpc(node, mod, fun, *args)
-      p args
-      n = self.new
-#      args = [args] unless args.is_a?(Array) || args.is_a?(Hash)
-      setup = proc{ n.do_connect(node, mod, fun, args) }
-
-      if EM.reactor_running?
-        setup.call
-      else
-        EM.run(&setup)
+    class << self
+      def fun(node, mod, fun, *args)
+        rpc(node, mod, fun, args)
       end
-      n.result
+
+      def rpc(node, mod, fun, args)
+        p args
+        n = self.new
+        #      args = [args] unless args.is_a?(Array) || args.is_a?(Hash)
+        setup = proc{ n.do_connect(node, mod, fun, args) }
+
+        if EM.reactor_running?
+          setup.call
+        else
+          EM.run(&setup)
+        end
+        n.result
+      end
+      #alias :fun :rpc
     end
 
     def do_connect(node,mod,fun,args)

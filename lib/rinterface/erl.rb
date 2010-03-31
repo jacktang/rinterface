@@ -5,7 +5,7 @@ module Rinterface
     class << self
 
       def method_missing(fun, *rest)
-        Erlang::Node.rpc("spec", @@module, fun.to_s, *rest)
+        Erlang::Node.fun("spec", @@module, fun.to_s, *rest)
       end
 
       def const_missing(m)

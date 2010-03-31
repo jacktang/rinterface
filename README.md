@@ -57,6 +57,14 @@ Where Response is the result from the Erlang, or:
 
 Where Reason is the 'why' it failed.
 
+### Experimental new way
+
+The code above can be written like this now:
+
+    Erl::MathServer.add(10, 20)
+		
+(Ain`t Ruby a beauty? ;)
+
 
 ### So you wanna test your Erlang code from RSpec...
 
