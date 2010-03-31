@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 require 'rubygems'
 require 'rake'
 require 'rake/clean'
@@ -18,7 +19,8 @@ begin
     gem.description = "Pure Ruby client that can send RPC calls to an Erlang node"
     gem.email = "r@interf.ace"
     gem.homepage = "http://github.com/davebryson/rinterface"
-    gem.authors = ["Dave Bryson"]
+    gem.authors = ["Dave Bryson", "Éverton Ribeiro", "Marcos Piccinini"]
+    gem.add_dependency "eventmachine"
     gem.add_development_dependency "rspec"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
