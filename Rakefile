@@ -54,14 +54,23 @@ namespace :daemon do
   task :status do
     sh("ps aux | grep #{START_MODULE}")
   end
-
 end
 
 namespace :spec do
   desc "Open up a shell and run spec test server"
   task :run => [:compile] do
+    sh("erl -noshell -W -pa spec -sname spec -s spec_server&")
+  end
+  desc "Open up a shell and run spec test server"
+  task :shell => [:compile] do
     sh("erl -W -pa spec -sname spec -s spec_server")
   end
+end
+
+task :test => [:compile] do
+  puts "Running suite.."
+  Rake::Task["spec"].invoke
+  Rake::Task["spec"].invoke
 end
 
 # Spec
