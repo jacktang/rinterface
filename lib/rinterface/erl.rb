@@ -4,8 +4,8 @@ module Rinterface
 
     class << self
 
-      def method_missing(fun, *rest)
-        Erlang::Node.fun("spec", @@module, fun.to_s, *rest)
+      def method_missing(fun, node, *rest)
+        Erlang::Node.fun(node.to_s, @@module, fun.to_s, *rest)
       end
 
       def const_missing(m)

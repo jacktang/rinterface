@@ -18,9 +18,7 @@ module Erlang
       end
 
       def rpc(node, mod, fun, args)
-        p args
         n = self.new
-        #      args = [args] unless args.is_a?(Array) || args.is_a?(Hash)
         setup = proc{ n.do_connect(node, mod, fun, args) }
 
         if EM.reactor_running?

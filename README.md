@@ -49,11 +49,11 @@ Where:
 
 The result will always be an Array of the form:
 
-    [:ok, response]
+    [:ok, Response]
 
 Where Response is the result from the Erlang, or:
 
-    [:badrpc, reason]
+    [:badrpc, Reason]
 
 Where Reason is the 'why' it failed.
 
@@ -62,17 +62,19 @@ Where Reason is the 'why' it failed.
 The code above can be written like this now:
 
     Erl::MathServer.add(10, 20)
-		
+
 (Ain`t Ruby a beauty? ;)
 
 
-### So you wanna test your Erlang code from RSpec...
+## So you wanna...
+
+### Test your Erlang code from RSpec...
 
 Here's a quick and simple example. Make sure you put the rinterface lib into RAILS_ROOT/lib and start the math_server in 'test'
 
 
 
-### So you wanna call Erlang from your Rails app...
+### Call Erlang from your Rails app...
 
 Here's a quick and simple example. Make sure you put the rinterface lib into RAILS_ROOT/lib and start the math_server in 'test'
 In the controller:
