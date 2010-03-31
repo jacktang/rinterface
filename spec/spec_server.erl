@@ -1,7 +1,9 @@
 -module(spec_server).
--export([start/0, power/1, dump/1, add/2, area/1, distance/2]).
+-export([start/0, power/1, echo/1, dump/1, add/2, area/1, distance/2]).
 
 start()   -> ok.
+
+echo(R)  -> R.
 
 add(X, Y) -> X + Y.
 

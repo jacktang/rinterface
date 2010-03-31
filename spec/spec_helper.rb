@@ -38,7 +38,7 @@ module Daemon
       puts "Spec daemon running. (PID #{@pid})"
     else
       puts "Starting daemon.."
-      system("erl -noshell -W -pa spec -sname spec -s spec_server&")
+      system("rake spec:run")#erl -noshell -W -pa spec -sname spec -s spec_server&")
       sleep 1
       start!
     end

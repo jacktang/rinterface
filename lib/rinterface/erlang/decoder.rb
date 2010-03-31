@@ -1,170 +1,4 @@
-#
-# adopted from Erlectricity
-# this version is slightly tweaked,  a bit sloppy, and needs a cleanin'
-#
 module Erlang
-  module Terms
-
-    class Pid
-      attr_reader :node, :node_id, :serial, :creation
-      def initialize(node,nid,serial,created)
-        @node = node
-        @node_id = nid
-        @serial = serial
-        @creation = created
-      end
-    end
-
-    class List
-      attr_reader :data
-      def initialize(array)
-        @data = array
-      end
-    end
-
-  end
-
-  module External
-    module  Types
-      SMALL_INT = 97
-      INT = 98
-
-      SMALL_BIGNUM = 110
-      LARGE_BIGNUM = 111
-
-      FLOAT = 99
-      NEW_FLOAT = 70
-
-      ATOM = 100
-      REF = 101           #old style reference
-      NEW_REF = 114
-      PORT = 102          #not supported accross node boundaries
-      PID = 103
-
-      SMALL_TUPLE = 104
-      LARGE_TUPLE = 105
-
-      NIL = 106
-      STRING = 107
-      LIST = 108
-      BIN = 109
-
-      FUN = 117
-      NEW_FUN = 112
-    end
-
-    VERSION = 131
-
-    MAX_INT = (1 << 27) -1
-    MIN_INT = -(1 << 27)
-    MAX_ATOM = 255
-  end
-
-  class Encoder
-    include External::Types
-    include Terms
-
-    attr_accessor :out
-    def initialize
-      @out = StringIO.new('', 'w')
-    end
-
-    def rewind
-      @out.rewind
-    end
-
-    def term_to_binary obj
-      write_1 External::VERSION
-      write_any_raw obj
-    end
-
-    def write_any_raw obj
-      case obj
-      when Symbol then write_symbol(obj)
-      when Fixnum, Bignum then write_integer(obj)
-      when Float then write_double(obj)
-      when Array then write_tuple(obj)
-      when String then write_binary(obj)
-      when Pid then write_pid(obj)
-      when List then write_list(obj)
-      else
-        raise "Failed encoding!"
-      end
-    end
-
-    def write_1(byte)
-      @out.write([byte].pack("C"))
-    end
-
-    def write_2(short)
-      @out.write([short].pack("n"))
-    end
-
-    def write_4(long)
-      @out.write([long].pack("N"))
-    end
-
-    def write_string(string)
-      @out.write(string)
-    end
-
-    def write_symbol(sym)
-      data = sym.to_s
-      write_1 ATOM
-      write_2 data.length
-      write_string data
-    end
-
-    # TODO: Bignum support
-    def write_integer(num)
-      if 0 <= num && num < 256
-        write_1 SMALL_INT
-        write_1 num
-      else
-        write_1 INT
-        write_4 num
-      end
-    end
-    
-    def write_double(num)
-      write_1 NEW_FLOAT
-      @out.write([num].pack('G'))
-    end
-
-    def write_tuple(data)
-      if data.length < 256
-        write_1 SMALL_TUPLE
-        write_1 data.length
-      else
-        write_1 LARGE_TUPLE
-        write_4 data.length
-      end
-      data.each{|e| write_any_raw e }
-    end
-
-    def write_pid(pid)
-      write_1(103)
-      write_symbol(pid.node)
-      write_4((pid.node_id & 0x7fff))
-      write_4((pid.serial & 0x1fff))
-      write_1((pid.creation & 0x3))
-    end
-
-    def write_list(list)
-      len = list.data.size
-      write_1(108)
-      write_4(len)
-      list.data.each{ |i| write_any_raw i }
-      write_1(106)
-    end
-
-    def write_binary(data)
-      write_1 BIN
-      write_4 data.length
-      write_string data
-    end
-
-  end
 
   class Decode
     include External::Types
@@ -311,7 +145,7 @@ module Erlang
       end
       Bignum.induced_from(added)
     end
-    
+
     def read_double
       fail("Invalid Type, not a double") unless read_1 == NEW_FLOAT
       read_string(64).unpack('G').first
@@ -385,4 +219,5 @@ module Erlang
     end
 
   end
+
 end

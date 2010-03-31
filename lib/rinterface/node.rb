@@ -1,4 +1,4 @@
-# 
+#
 # Single shot client.
 # - connects to epmd to get the port number of the erlang node
 # - does the handshake
@@ -7,15 +7,17 @@
 module Erlang
   class Node
     attr_reader :result
-    
+
     def initialize
       @result = nil
     end
-    
-    def self.rpc(node,mod,fun,args)
+
+    def self.rpc(node, mod, fun, *args)
+      p args
       n = self.new
-      setup = proc{ n.do_connect(node,mod,fun,args) }
-      
+#      args = [args] unless args.is_a?(Array) || args.is_a?(Hash)
+      setup = proc{ n.do_connect(node, mod, fun, args) }
+
       if EM.reactor_running?
         setup.call
       else
@@ -23,7 +25,7 @@ module Erlang
       end
       n.result
     end
-    
+
     def do_connect(node,mod,fun,args)
       epmd = EpmdConnection.lookup_node(node)
       epmd.callback do |port|
@@ -62,15 +64,15 @@ module Erlang
         EM.stop
       end
     end
-    
+
   end
-  
-  
+
+
   class NodeConnection < EM::Connection
     include EM::Deferrable
-    
+
     attr_accessor :host,:myname,:destnode,:port,:cookie,:mod,:fun,:args
-    
+
     # node = destination node
     # port = the port of the Erlang node (from epmd)
     # mod  = the module to call
@@ -87,8 +89,8 @@ module Erlang
         c.cookie = get_cookie
       end
     end
-    
-    
+
+
     # Get the Cookie from the home directory
     def self.get_cookie
       # ... I did it all for the cookie, come on the cookie ...
@@ -96,27 +98,27 @@ module Erlang
       fh = File.open(fp,'r')
       fh.readline.strip
     end
-    
+
     # Build a nodename for us
     def self.build_nodename
       require 'socket'
       myhostname = Socket.gethostname.split(".")[0]
       "ruby_client@#{myhostname}"
     end
-    
+
     def post_init
       @responder = :determine_message
     end
-    
+
     def connection_completed
       send_data send_name
     end
-    
+
     def receive_data data
       @resp = data
       send @responder
     end
-    
+
     def handle_any_response
       result = ""
       decoder = Decode.read_bits(@resp)
@@ -126,7 +128,7 @@ module Erlang
       if code == 'p'
         #puts "found the p"
         # read the control message and ignore
-        decoder.read_any 
+        decoder.read_any
         # read the message
         result = decoder.read_any
         #puts "Raw Response: #{result.inspect}"
@@ -137,7 +139,7 @@ module Erlang
         set_deferred_failure result
       end
     end
-    
+
     def send_name
       full_host_name = self.myname
       encode = Encoder.new
@@ -152,7 +154,7 @@ module Erlang
       encode.write_string(full_host_name)
       encode.out.string
     end
-    
+
     def determine_message
       decoder = Decode.read_bits(@resp)
       packet_size = decoder.read_2
@@ -165,7 +167,7 @@ module Erlang
       else "Got back a weird packet"
       end
     end
-    
+
     def receive_status(packet_size,decoder)
       status = decoder.read_string(packet_size-1)
       if decoder.in.size > (packet_size + 2)
@@ -176,7 +178,7 @@ module Erlang
       end
       set_deferred_failure "Failed on Recv Status: #{status_code}" unless status == 'ok'
     end
-    
+
     def receive_challenge(packet_size,decoder)
       dist_code = decoder.read_2
       #puts "Code: #{dist_code}"
@@ -189,7 +191,7 @@ module Erlang
       #out_challenge = make_challenge(challenge)
       send_data make_challenge(challenge)
     end
-    
+
     def make_challenge(her_challenge)
       incr_digest = Digest::MD5.new()
       incr_digest << @cookie
@@ -203,13 +205,13 @@ module Erlang
       encoder.write_string(digest)
       encoder.out.string
     end
-    
+
     # Handshake complete...send the RPC
     def receive_challenge_ack(packet_size,decoder)
       @responder = :handle_any_response
       call_remote
     end
-    
+
     def call_remote
       myPid = Erlang::Terms::Pid.new(self.myname.intern,5,5,5)
       call_tuple = [:call,self.mod.intern,self.fun.intern,Erlang::Terms::List.new(self.args),:user]
@@ -220,13 +222,13 @@ module Erlang
       encode_data.term_to_binary(ctl_msg)
       encode_data.term_to_binary(rpc_tuple)
       data = encode_data.out.string
-      
+
       f = Encoder.new
       f.write_4(data.length + 1)
       final_out = f.out.string + 'p' + data
       send_data final_out
     end
-    
+
   end
 end
 
