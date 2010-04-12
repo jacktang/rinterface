@@ -109,3 +109,10 @@ Don`t forget to run specs before/after patching.
 
 Use either "rake spec" or "spec spec",
 it`ll start the erlang daemon automatically.
+
+
+## Other stuff
+
+http://code.google.com/p/a2800276/source/browse/trunk/ruby/erlang/lib
+
+http://code.google.com/p/erlectricity/source/browse/#svn/trunk/lib/erlectricity
