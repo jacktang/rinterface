@@ -93,6 +93,14 @@ module Erlang
       read(4).unpack("N").first
     end
 
+    def read_4_float
+      read(4).unpack("g").first 
+    end 
+
+    def read_8_double
+      read(8).unpack("G").first
+    end
+
     def read_string(length)
       read(length)
     end
@@ -148,13 +156,12 @@ module Erlang
 
     def read_double
       fail("Invalid Type, not a double") unless read_1 == NEW_FLOAT
-      read_string(64).unpack('G').first
+      read_8_double
     end
 
     def read_float
       fail("Invalid Type, not a float") unless read_1 == FLOAT
-
-      read_string(32).unpack('g').first
+      read_4_float
     end
 
     def read_new_reference
