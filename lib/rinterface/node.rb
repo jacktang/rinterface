@@ -19,7 +19,7 @@ module Erlang
 
       def rpc(node, mod, fun, args)
         n = self.new
-        setup = proc{ n.do_connect(node, mod, fun, args) }
+        setup = proc{ n.do_connect(node.to_s, mod.to_s, fun.to_s, args) }
 
         if EM.reactor_running?
           setup.call
