@@ -68,18 +68,14 @@ The code above can be written like this now:
 ## Use in Rails app
 
 Here's a quick and simple example. Make sure you put the rinterface lib into RAILS_ROOT/lib and start the math_server in 'test'
-In the controller:
+In the controller(controllers/math_controller.rb):
 <pre>
-    controllers/math_controller.rb
-
-    require "lib/rinterface"
-
+    require "rinterface"
     class MathController < ApplicationController
       def index
         a = params[:a]
         b = params[:b]
         r = Erlang::Node.rpc("math","math_server","add",[a.to_i,b.to_i])
-
         if r[0] == :badrpc
           @result = "Error"
         else
