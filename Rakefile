@@ -75,10 +75,11 @@ task :test => [:compile] do
   Rake::Task["spec"].invoke
 end
 
+=begin
 # Spec
 #
-require 'spec/rake/spectask'
-Spec::Rake::SpecTask.new(:spec) do |spec|
+require 'rspec'
+RSpec::Core::RakeTask.new(:spec) do |spec|
   spec.libs << 'lib' << 'spec'
   spec.spec_files = FileList['spec/**/*_spec.rb']
 end
@@ -105,3 +106,4 @@ Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
+=end

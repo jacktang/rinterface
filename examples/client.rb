@@ -1,3 +1,4 @@
+require 'benchmark'
 require 'lib/rinterface'
 
 
@@ -16,4 +17,17 @@ puts "--------"
 puts "Good call, add 10 + 20"
 r = Erlang::Node.rpc("math","math_server","add",[10,20])
 puts "Got: #{r.inspect}"
+
+puts "-------"
+puts "Benchmarks"
+n = 1000
+Benchmark.bm do |x|
+  x.report do 
+    for i in 1..n;
+      a = rand(i)
+      b = rand(n)
+      r = Erlang::Node.rpc("math","math_server","add",[a,b])
+    end 
+ end
+end
 
