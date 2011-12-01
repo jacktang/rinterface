@@ -69,25 +69,25 @@ The code above can be written like this now:
 
 Here's a quick and simple example. Make sure you put the rinterface lib into RAILS_ROOT/lib and start the math_server in 'test'
 In the controller(controllers/math_controller.rb):
+
 <pre>
-    require "rinterface"
-    class MathController < ApplicationController
-      def index
-        a = params[:a]
-        b = params[:b]
-        r = Erlang::Node.rpc("math","math_server","add",[a.to_i,b.to_i])
-        if r[0] == :badrpc
-          @result = "Error"
-        else
-          @result = r[1]
-        end
+  require "rinterface"
+  class MathController < ApplicationController
+    def index
+      a = params[:a]
+      b = params[:b]
+      r = Erlang::Node.rpc("math","math_server","add",[a.to_i,b.to_i])
+      if r[0] == :badrpc
+        @result = "Error"
+      else
+        @result = r[1]
       end
     end
+  end
 </pre>
 
 Finally, add a template for the view, and try 'http://localhost:3000/math?a=2&b=3'.
-This is not ideal yet and not something I'd use yet in production,
-but it's a starting point for experimenting.
+This is not ideal yet and not something I'd use yet in production, but it's a starting point for experimenting.
 
 ## Development Plan
 
