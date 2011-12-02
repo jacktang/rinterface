@@ -100,6 +100,12 @@ This is not ideal yet and not something I'd use yet in production, but it's a st
 * Improve the code or add your idea
 * Run specs before/after patching. Use either "rake spec" or "spec spec", it`ll start the erlang daemon automatically.
 * Send me the pull request on Github
+* Sync code from this fork if you want, act as below:
+  <pre>
+git remote add jackfork git://github.com/jacktang/rinterface.git
+git pull jackfork master
+git push origin
+  </pre> 
 
 
 ## Other stuff
