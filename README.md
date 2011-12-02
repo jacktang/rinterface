@@ -72,7 +72,7 @@ In the controller(controllers/math_controller.rb):
 
 <pre>
   require "rinterface"
-  class MathController < ApplicationController
+  class MathController &lt; ApplicationController
     def index
       a = params[:a]
       b = params[:b]
