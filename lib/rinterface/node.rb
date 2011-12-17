@@ -78,13 +78,24 @@ module Erlang
 
     attr_accessor :host,:myname,:destnode,:port,:cookie,:mod,:fun,:args
 
+    def self.host_info(nodename)
+      node = nodename
+      host = "127.0.0.1"
+      res = nodename.scan(/(.*)@(.*)/).flatten
+      if res.length == 2
+          node= res[0]
+          host = res[1]
+      end
+      [host, node]
+    end
     # node = destination node
     # port = the port of the Erlang node (from epmd)
     # mod  = the module to call
     # fun  = the function to call
     # args = args to pass to fun
-    def self.rpc_call(node,port,mod,fun,args)
-      EM.connect("127.0.0.1",port,self) do |c|
+    def self.rpc_call(nodename,port,mod,fun,args)
+      host, node = host_info(nodename)
+      EM.connect(host,port,self) do |c|
         c.destnode = node
         c.mod = mod
         c.fun = fun

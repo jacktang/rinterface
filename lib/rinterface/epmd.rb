@@ -7,9 +7,21 @@ module Erlang
     include EM::Deferrable
     attr_accessor :nodename
 
+    def self.host_info(nodename)
+        node = nodename
+        host = "127.0.0.1"
+        res = nodename.scan(/(.*)@(.*)/).flatten
+        if res.length == 2
+            node= res[0]
+            host = res[1]
+        end
+        [host, node]
+    end
+
     def self.lookup_node(nodename)
-      EM.connect("127.0.0.1",4369,self) do |conn|
-        conn.nodename = nodename
+      host, node = host_info(nodename)
+      EM.connect(host,4369,self) do |conn|
+        conn.nodename = node
       end
     end
 
