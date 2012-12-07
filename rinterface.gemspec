@@ -44,7 +44,7 @@ Gem::Specification.new do |s|
   s.rubygems_version = %q{1.3.6}
   s.summary = %q{Erlang RPC Ruby Client}
   s.test_files = [
-    "spec/rinterface_spec.rb",
+     "spec/rinterface_spec.rb",
      "spec/spec_helper.rb",
      "spec/rinterface/node_spec.rb",
      "spec/rinterface/erl_spec.rb",
