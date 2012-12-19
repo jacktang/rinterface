@@ -55,18 +55,18 @@ module Erlang
           else
             @result = [:ok,r]
           end
-          EM.stop
+          EM.stop unless defined?(Rails)
         end
         conn.errback do |err|
           # never called??
           @result = [:badrpc,err]
-          EM.stop
+          EM.stop unless defined?(Rails)
         end
       end
       epmd.errback do |err|
         # return bad RPC no port found (0)
         @result = [:badrpc,"no port found for service"]
-        EM.stop
+        EM.stop unless defined?(Rails)
       end
     end
 
