@@ -24,7 +24,9 @@ module Erlang
         if EM.reactor_running?
           setup.call
         else
-          EM.run(&setup)
+          Thread.new do
+            EM.run(&setup)
+          end
         end
         n.result
       end
