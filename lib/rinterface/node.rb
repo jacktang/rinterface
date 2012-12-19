@@ -55,18 +55,19 @@ module Erlang
           else
             @result = [:ok,r]
           end
-          EM.stop unless defined?(Rails)
+          # don't stop EventMachine instance in thin/rails server
+          EM.stop unless (defined?(Rails) || defined?(Thin))
         end
         conn.errback do |err|
           # never called??
           @result = [:badrpc,err]
-          EM.stop unless defined?(Rails)
+          EM.stop unless (defined?(Rails) || defined?(Thin))
         end
       end
       epmd.errback do |err|
         # return bad RPC no port found (0)
         @result = [:badrpc,"no port found for service"]
-        EM.stop unless defined?(Rails)
+        EM.stop unless (defined?(Rails) || defined?(Thin))
       end
     end
 
